@@ -7,10 +7,13 @@ import * as input from './input/input.js';
 import * as hud from './ui/hud.js';
 import * as menus from './ui/menus.js';
 import * as audio from './audio/audio.js';
+import * as fx from './render/fx.js';
+import * as cameraEffects from './render/cameraEffects.js';
+import * as combo from './game/combo.js';
 import { createInitialState, resetLevel } from './game/state.js';
 import { getLevel } from './game/levels.js';
 import { update } from './game/update.js';
-import { clearBricks } from './render/entitiesView.js';
+import { clearBricks, clearPowerups, clearExtraBalls } from './render/entitiesView.js';
 
 let state = null;
 let sceneObj = null;
@@ -27,6 +30,8 @@ function init() {
   camera = sceneData.camera;
   
   entitiesView.init(sceneObj);
+  fx.init(sceneObj);
+  cameraEffects.init(camera);
   
   state = createInitialState();
   
@@ -36,6 +41,7 @@ function init() {
   input.init(renderer.getCanvas());
   
   audio.init();
+  combo.init();
   
   hud.init();
   menus.init();
@@ -103,6 +109,15 @@ function startGame() {
   state.level = 1;
   
   clearBricks();
+  clearPowerups();
+  clearExtraBalls();
+  fx.clearAll();
+  combo.init();
+  
+  state.powerups = [];
+  state.activePowerups = [];
+  state.extraBalls = [];
+  
   const levelBricks = getLevel(1);
   resetLevel(state, 1, levelBricks);
   
@@ -116,6 +131,15 @@ function startGame() {
 
 function restartLevel() {
   clearBricks();
+  clearPowerups();
+  clearExtraBalls();
+  fx.clearAll();
+  combo.init();
+  
+  state.powerups = [];
+  state.activePowerups = [];
+  state.extraBalls = [];
+  
   const levelBricks = getLevel(state.level);
   resetLevel(state, state.level, levelBricks);
   
@@ -137,6 +161,15 @@ function nextLevel() {
   }
   
   clearBricks();
+  clearPowerups();
+  clearExtraBalls();
+  fx.clearAll();
+  combo.init();
+  
+  state.powerups = [];
+  state.activePowerups = [];
+  state.extraBalls = [];
+  
   const levelBricks = getLevel(state.level);
   resetLevel(state, state.level, levelBricks);
   

@@ -1,8 +1,12 @@
 import { WORLD_WIDTH, WORLD_HEIGHT } from '../render/renderer.js';
 import { checkWallCollisions, checkPaddleCollision, checkBrickCollisions } from './collision.js';
 import { updateScore, loseLife, checkLevelComplete, levelComplete, checkGameOver, gameOver } from './rules.js';
-import { removeBrick, updateBrick } from '../render/entitiesView.js';
+import { removeBrick, updateBrick, removePowerup } from '../render/entitiesView.js';
 import * as audio from '../audio/audio.js';
+import * as powerups from './powerups.js';
+import * as combo from './combo.js';
+import * as fx from '../render/fx.js';
+import * as cameraEffects from '../render/cameraEffects.js';
 
 const LERP_FACTOR = 0.15;
 
@@ -22,7 +26,27 @@ export function update(state, dt) {
     }
   } else {
     updateBall(state, dt);
+    
+    if (!state.extraBalls) {
+      state.extraBalls = [];
+    }
+    updateExtraBalls(state, dt);
   }
+  
+  if (!state.powerups) {
+    state.powerups = [];
+  }
+  powerups.updatePowerups(state.powerups, dt);
+  updatePowerupCollisions(state);
+  
+  if (!state.activePowerups) {
+    state.activePowerups = [];
+  }
+  powerups.updateActivePowerups(state, dt);
+  
+  combo.update(dt);
+  fx.update(dt);
+  cameraEffects.update(dt);
 }
 
 function updatePaddle(state, dt) {
@@ -67,14 +91,36 @@ function updateBall(state, dt) {
   
   if (checkPaddleCollision(ball, state.paddle)) {
     audio.play('paddle_hit');
+    fx.createPaddleFlash(state.paddle);
+  }
+  
+  if (!ball.stuck) {
+    fx.createBallTrail(ball);
   }
   
   const hits = checkBrickCollisions(ball, state.bricks);
   hits.forEach(hit => {
-    updateScore(state, hit.scoreGained);
+    if (hit.destroyed || hit.scoreGained > 0) {
+      combo.addHit();
+      const comboBonus = combo.getComboBonus();
+      updateScore(state, hit.scoreGained + comboBonus);
+    }
+    
     if (hit.destroyed) {
       removeBrick(hit.brick.id);
       audio.play('brick_destroy');
+      fx.createBrickDestroyParticles(hit.brick);
+      cameraEffects.screenShake(5, 0.1);
+      
+      if (powerups.shouldDropPowerup(state.level)) {
+        const powerup = powerups.createPowerup(hit.brick, state.level);
+        state.powerups.push(powerup);
+      }
+      
+      const remainingDestructible = state.bricks.filter(b => b.type !== 'steel').length;
+      if (remainingDestructible === 0) {
+        cameraEffects.screenShake(15, 0.3);
+      }
     } else {
       audio.play('brick_hit');
       if (hit.brick.type === 'strong') {
@@ -86,6 +132,11 @@ function updateBall(state, dt) {
   if (ball.y - ball.radius < 0) {
     loseLife(state);
     audio.play('life_lost');
+    combo.resetCombo();
+    
+    if (state.extraBalls) {
+      state.extraBalls = [];
+    }
     
     if (checkGameOver(state)) {
       gameOver(state);
@@ -96,5 +147,59 @@ function updateBall(state, dt) {
   if (checkLevelComplete(state)) {
     levelComplete(state);
     audio.play('level_complete');
+  }
+}
+
+function updateExtraBalls(state, dt) {
+  if (!state.extraBalls) return;
+  
+  for (let i = state.extraBalls.length - 1; i >= 0; i--) {
+    const ball = state.extraBalls[i];
+    
+    ball.x += ball.vx * dt;
+    ball.y += ball.vy * dt;
+    
+    checkWallCollisions(ball, WORLD_WIDTH, WORLD_HEIGHT);
+    checkPaddleCollision(ball, state.paddle);
+    
+    const hits = checkBrickCollisions(ball, state.bricks);
+    hits.forEach(hit => {
+      if (hit.destroyed || hit.scoreGained > 0) {
+        combo.addHit();
+        const comboBonus = combo.getComboBonus();
+        updateScore(state, hit.scoreGained + comboBonus);
+      }
+      
+      if (hit.destroyed) {
+        removeBrick(hit.brick.id);
+        fx.createBrickDestroyParticles(hit.brick);
+        
+        if (powerups.shouldDropPowerup(state.level)) {
+          const powerup = powerups.createPowerup(hit.brick, state.level);
+          state.powerups.push(powerup);
+        }
+      } else if (hit.brick.type === 'strong') {
+        updateBrick(hit.brick);
+      }
+    });
+    
+    if (ball.y - ball.radius < 0) {
+      state.extraBalls.splice(i, 1);
+    }
+  }
+}
+
+function updatePowerupCollisions(state) {
+  if (!state.powerups) return;
+  
+  for (let i = state.powerups.length - 1; i >= 0; i--) {
+    const powerup = state.powerups[i];
+    
+    if (!powerup.active && powerups.checkPowerupCollision(powerup, state.paddle)) {
+      powerups.activatePowerup(state, powerup);
+      state.activePowerups.push(powerup);
+      removePowerup(powerup.id);
+      state.powerups.splice(i, 1);
+    }
   }
 }

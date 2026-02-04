@@ -1,8 +1,10 @@
 import * as audio from '../audio/audio.js';
+import * as combo from '../game/combo.js';
 
 let scoreElement = null;
 let livesElement = null;
 let levelElement = null;
+let comboElement = null;
 let muteButton = null;
 
 export function init() {
@@ -16,9 +18,15 @@ export function init() {
   `;
   document.body.appendChild(hudContainer);
   
+  const comboContainer = document.createElement('div');
+  comboContainer.id = 'combo-display';
+  comboContainer.innerHTML = '<span id="combo-text"></span>';
+  document.body.appendChild(comboContainer);
+  
   scoreElement = document.getElementById('score');
   livesElement = document.getElementById('lives');
   levelElement = document.getElementById('level');
+  comboElement = document.getElementById('combo-text');
   muteButton = document.getElementById('mute-btn');
   
   updateMuteButton();
@@ -39,4 +47,14 @@ export function update(state) {
   if (scoreElement) scoreElement.textContent = state.score;
   if (livesElement) livesElement.textContent = state.lives;
   if (levelElement) levelElement.textContent = state.level;
+  
+  if (comboElement) {
+    const comboCount = combo.getComboCount();
+    if (combo.isComboActive()) {
+      comboElement.textContent = `COMBO x${comboCount}!`;
+      comboElement.parentElement.style.display = 'block';
+    } else {
+      comboElement.parentElement.style.display = 'none';
+    }
+  }
 }

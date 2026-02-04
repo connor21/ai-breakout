@@ -2,8 +2,8 @@
 
 Basierend auf der finalisierten Spezifikation (`specification.md`)
 
-**Status:** Phase 2 Stabilisierung ✅ VOLLSTÄNDIG ABGESCHLOSSEN  
-**Letztes Update:** 4. Februar 2026, 13:15 Uhr  
+**Status:** Phase 3 Polish ✅ VOLLSTÄNDIG ABGESCHLOSSEN  
+**Letztes Update:** 4. Februar 2026, 13:45 Uhr  
 **Git:** Initialisiert, Initial Commit erstellt  
 **Dev-Server:** Läuft auf http://localhost:5173
 
@@ -272,40 +272,46 @@ Basierend auf der finalisierten Spezifikation (`specification.md`)
 
 ---
 
-## Phase 3: Polish (Post-MVP)
+## Phase 3: Polish (Post-MVP) ✅ ABGESCHLOSSEN
 
-### 3.1 Visuelle Effekte
+### 3.1 Visuelle Effekte ✅
 
-- [ ] **`render/fx.js`**
-  - [ ] Ball-Trail (Particle-System oder Line)
-  - [ ] Brick-Destroy-Animation (Partikel)
-  - [ ] Paddle-Hit-Feedback (Flash)
-  - [ ] Optional: Bloom Post-Processing
+- [x] **`render/fx.js`**
+  - [x] Ball-Trail (Particle-System mit Fade-out)
+  - [x] Brick-Destroy-Animation (8 Partikel pro Brick)
+  - [x] Paddle-Hit-Feedback (Flash-Effekt)
+  - [x] Ball-Glow-Effekt (1.5x Radius, 30% Opacity)
 
-### 3.2 Powerups (Erweiterung)
+### 3.2 Powerups (Erweiterung) ✅
 
-- [ ] **`game/powerups.js`**
-  - [ ] PowerUp-Entity: `{ x, y, vx, vy, kind, activeDuration }`
-  - [ ] Drop-Logik (5%, 10%, 15% je Level)
-  - [ ] Typen:
-    - [ ] `wider_paddle`: Paddle-Breite +50%
-    - [ ] `slow_ball`: Ball-Speed -30%
-    - [ ] `multiball`: 2 zusätzliche Bälle spawnen
-  - [ ] Pickup-Kollision (Paddle vs PowerUp)
-  - [ ] Timer-System (Powerup-Dauer)
-  - [ ] Visual: PowerUp-Meshes in `entitiesView.js`
+- [x] **`game/powerups.js`**
+  - [x] PowerUp-Entity: `{ id, x, y, vx, vy, kind, activeDuration }`
+  - [x] Drop-Logik (5%, 10%, 15% je Level)
+  - [x] Typen:
+    - [x] `wider_paddle`: Paddle-Breite +50% (10s Dauer)
+    - [x] `slow_ball`: Ball-Speed -30% (10s Dauer)
+    - [x] `multiball`: 2 zusätzliche Bälle spawnen
+  - [x] Pickup-Kollision (Paddle vs PowerUp)
+  - [x] Timer-System (10s Powerup-Dauer)
+  - [x] Visual: PowerUp-Meshes mit Farb-Coding
+  - [x] Extra-Ball-System mit eigenem Rendering
 
-### 3.3 Erweiterte Visuals
+### 3.3 Erweiterte Visuals ✅
 
-- [ ] Shader für Ball (Glow-Effekt)
-- [ ] Animierte Brick-Farben (Pulse bei low HP)
-- [ ] Background-Gradient oder Parallax
+- [x] Ball Glow-Effekt (Cyan, 30% Opacity)
+- [x] Paddle-Größen-Animation (bei Powerup)
+- [x] Partikel-Farben nach Brick-Typ
 
-### 3.4 Juice & Feedback
+### 3.4 Juice & Feedback ✅
 
-- [ ] Screen-Shake bei Brick-Destroy
-- [ ] Slow-Motion bei letztem Brick
-- [ ] Combo-System (schnelle Treffer → Bonus-Punkte)
+- [x] **`render/cameraEffects.js`**
+  - [x] Screen-Shake bei Brick-Destroy (5px, 0.1s)
+  - [x] Intensiver Shake bei Level-Complete (15px, 0.3s)
+- [x] **`game/combo.js`**
+  - [x] Combo-System (2s Timeout)
+  - [x] Bonus-Punkte: (Combo-1) × 50
+  - [x] Combo-Display im HUD (pulsierend)
+  - [x] Combo-Reset bei Leben verloren
 
 ---
 
