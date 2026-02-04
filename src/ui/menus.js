@@ -1,3 +1,5 @@
+import { getHighscore } from '../game/persistence.js';
+
 let menuContainer = null;
 let currentMenu = null;
 
@@ -36,9 +38,11 @@ export function hide() {
 }
 
 function showStartMenu(callbacks) {
+  const highscore = getHighscore();
   menuContainer.innerHTML = `
     <div class="menu">
       <h1>ARKANOID</h1>
+      ${highscore > 0 ? `<p class="score-display">Highscore: ${highscore}</p>` : ''}
       <button id="start-btn" class="menu-btn">Start Game</button>
       <div class="instructions">
         <p>Move: Mouse or Arrow Keys</p>
@@ -79,10 +83,14 @@ function showLevelCompleteMenu(state, callbacks) {
 }
 
 function showGameOverMenu(state, callbacks) {
+  const highscore = getHighscore();
+  const isNewHighscore = state.score > highscore;
+  
   menuContainer.innerHTML = `
     <div class="menu">
       <h2>GAME OVER</h2>
       <p class="score-display">Final Score: ${state.score}</p>
+      ${isNewHighscore ? '<p class="score-display" style="color: #00ff00;">NEW HIGHSCORE!</p>' : `<p style="color: #a0a0a0;">Highscore: ${highscore}</p>`}
       <button id="restart-game-btn" class="menu-btn">Restart</button>
       <button id="main-menu-btn" class="menu-btn">Main Menu</button>
     </div>

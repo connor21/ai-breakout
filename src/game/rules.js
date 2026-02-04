@@ -1,3 +1,5 @@
+import { saveHighscore } from './persistence.js';
+
 export function updateScore(state, points) {
   state.score += points;
 }
@@ -33,4 +35,5 @@ export function checkGameOver(state) {
 
 export function gameOver(state) {
   state.phase = 'GAME_OVER';
+  saveHighscore(state.score);
 }

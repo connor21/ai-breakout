@@ -43,6 +43,27 @@ body {
   text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
 }
 
+.mute-btn {
+  background: rgba(0, 217, 255, 0.2);
+  border: 2px solid #00d9ff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.mute-btn:hover {
+  background: rgba(0, 217, 255, 0.4);
+  box-shadow: 0 0 15px rgba(0, 217, 255, 0.6);
+  transform: scale(1.1);
+}
+
+.mute-btn:active {
+  transform: scale(0.95);
+}
+
 #menu-container {
   position: fixed;
   top: 0;

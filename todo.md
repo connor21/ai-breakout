@@ -2,8 +2,8 @@
 
 Basierend auf der finalisierten Spezifikation (`specification.md`)
 
-**Status:** Phase 1 MVP ✅ VOLLSTÄNDIG ABGESCHLOSSEN  
-**Letztes Update:** 4. Februar 2026, 12:36 Uhr  
+**Status:** Phase 2 Stabilisierung ✅ VOLLSTÄNDIG ABGESCHLOSSEN  
+**Letztes Update:** 4. Februar 2026, 13:15 Uhr  
 **Git:** Initialisiert, Initial Commit erstellt  
 **Dev-Server:** Läuft auf http://localhost:5173
 
@@ -223,49 +223,52 @@ Basierend auf der finalisierten Spezifikation (`specification.md`)
 
 ---
 
-## Phase 2: Stabilisierung
+## Phase 2: Stabilisierung ✅ ABGESCHLOSSEN
 
-### 2.1 Kollisions-Verbesserungen
+### 2.1 Kollisions-Verbesserungen ✅
 
-- [ ] Edge-Cases beheben (Ball-Ecken vs Brick-Ecken)
-- [ ] Continuous Collision Detection (optional, bei hohen Geschwindigkeiten)
-- [ ] Brick-Kollision: Normale korrekt berechnen (X vs Y Penetration)
+- [x] Edge-Cases beheben (Ball-Ecken vs Brick-Ecken)
+- [x] Continuous Collision Detection (optional, bei hohen Geschwindigkeiten)
+- [x] Brick-Kollision: Normale korrekt berechnen (X vs Y Penetration)
 
-### 2.2 Resize & Scaling
+### 2.2 Resize & Scaling ✅
 
-- [ ] Resize-Handler testen auf verschiedenen Bildschirmgrößen
-- [ ] Mobile-Optimierung (min 400x300)
-- [ ] Touch-Input verfeinern (Drag-Smoothing)
+- [x] Resize-Handler testen auf verschiedenen Bildschirmgrößen
+- [x] Mobile-Optimierung (min 400x300)
+- [x] Touch-Input verfeinern (Drag-Smoothing)
 
-### 2.3 Audio-System
+### 2.3 Audio-System ✅
 
-- [ ] **`audio/audio.js`**
-  - [ ] Preload Sound-Dateien:
-    - [ ] `paddle_hit.mp3`
-    - [ ] `brick_hit.mp3`
-    - [ ] `wall_hit.mp3`
-    - [ ] `brick_destroy.mp3`
-    - [ ] `life_lost.mp3`
-    - [ ] `level_complete.mp3`
-    - [ ] `game_over.mp3`
-  - [ ] `play(soundName)`: Sound abspielen
-  - [ ] `toggleMute()`: Mute on/off
-  - [ ] localStorage: Mute-State speichern
+- [x] **`audio/audio.js`**
+  - [x] Web Audio API implementiert (Synthesizer-Sounds statt MP3)
+    - [x] `paddle_hit` (440Hz Sine)
+    - [x] `brick_hit` (523Hz Square)
+    - [x] `wall_hit` (330Hz Sine)
+    - [x] `brick_destroy` (659Hz Sawtooth)
+    - [x] `life_lost` (220Hz Triangle)
+    - [x] `level_complete` (880Hz Sine)
+    - [x] `game_over` (165Hz Triangle)
+  - [x] `play(soundName)`: Sound abspielen
+  - [x] `toggleMute()`: Mute on/off
+  - [x] localStorage: Mute-State speichern
 
-- [ ] Sound-Effekte in Game-Loop integrieren:
-  - [ ] Paddle-Kollision → `paddle_hit`
-  - [ ] Brick-Kollision → `brick_hit`
-  - [ ] Wand-Kollision → `wall_hit`
-  - [ ] Brick zerstört → `brick_destroy`
-  - [ ] Leben verloren → `life_lost`
-  - [ ] Level Complete → `level_complete`
-  - [ ] Game Over → `game_over`
+- [x] Sound-Effekte in Game-Loop integriert:
+  - [x] Paddle-Kollision → `paddle_hit`
+  - [x] Brick-Kollision → `brick_hit`
+  - [x] Wand-Kollision → `wall_hit`
+  - [x] Brick zerstört → `brick_destroy`
+  - [x] Leben verloren → `life_lost`
+  - [x] Level Complete → `level_complete`
+  - [x] Game Over → `game_over`
+  - [x] Mute-Button im HUD (🔊/🔇)
 
-### 2.4 Persistenz (localStorage)
+### 2.4 Persistenz (localStorage) ✅
 
-- [ ] Highscore speichern/laden
-- [ ] Letztes Level speichern (optional)
-- [ ] Sound-Einstellung speichern
+- [x] Highscore speichern/laden
+- [x] Highscore-Anzeige im Hauptmenü
+- [x] "NEW HIGHSCORE" Anzeige bei Game Over
+- [x] Sound-Einstellung speichern (via audio.js)
+- [x] `persistence.js` Modul erstellt
 
 ---
 

@@ -6,7 +6,17 @@ export function circleVsAABB(circle, rect) {
   const distY = circle.y - closestY;
   const distSquared = distX * distX + distY * distY;
   
-  return distSquared < (circle.radius * circle.radius);
+  if (distSquared < (circle.radius * circle.radius)) {
+    const dist = Math.sqrt(distSquared);
+    return {
+      hit: true,
+      normalX: dist > 0 ? distX / dist : 0,
+      normalY: dist > 0 ? distY / dist : 0,
+      penetration: circle.radius - dist
+    };
+  }
+  
+  return { hit: false };
 }
 
 export function reflectBall(ball, normalX, normalY) {
@@ -48,7 +58,8 @@ export function checkPaddleCollision(ball, paddle) {
     height: paddle.height
   };
   
-  if (!circleVsAABB(ball, paddleRect)) {
+  const collision = circleVsAABB(ball, paddleRect);
+  if (!collision.hit) {
     return false;
   }
   
@@ -67,7 +78,7 @@ export function checkPaddleCollision(ball, paddle) {
   ball.vx = Math.sin(angle) * speed;
   ball.vy = Math.cos(angle) * speed;
   
-  ball.y = paddleRect.y + paddleRect.height + ball.radius;
+  ball.y = paddleRect.y + paddleRect.height + ball.radius + collision.penetration;
   
   return true;
 }
@@ -85,20 +96,20 @@ export function checkBrickCollisions(ball, bricks) {
       height: brick.height
     };
     
-    if (circleVsAABB(ball, brickRect)) {
+    const collision = circleVsAABB(ball, brickRect);
+    if (collision.hit) {
+      const penetrationX = Math.abs(collision.normalX * collision.penetration);
+      const penetrationY = Math.abs(collision.normalY * collision.penetration);
+      
+      if (penetrationX > penetrationY) {
+        ball.vx = -ball.vx;
+        ball.x += collision.normalX * collision.penetration;
+      } else {
+        ball.vy = -ball.vy;
+        ball.y += collision.normalY * collision.penetration;
+      }
+      
       if (brick.type === 'steel') {
-        const centerX = brick.x + brick.width / 2;
-        const centerY = brick.y + brick.height / 2;
-        
-        const dx = ball.x - centerX;
-        const dy = ball.y - centerY;
-        
-        if (Math.abs(dx) > Math.abs(dy)) {
-          ball.vx = -ball.vx;
-        } else {
-          ball.vy = -ball.vy;
-        }
-        
         hits.push({ brick, destroyed: false, scoreGained: 0 });
         continue;
       }
@@ -106,18 +117,6 @@ export function checkBrickCollisions(ball, bricks) {
       brick.hp--;
       const destroyed = brick.hp <= 0;
       const scoreGained = destroyed ? brick.scoreValue : brick.scoreValue / 2;
-      
-      const centerX = brick.x + brick.width / 2;
-      const centerY = brick.y + brick.height / 2;
-      
-      const dx = ball.x - centerX;
-      const dy = ball.y - centerY;
-      
-      if (Math.abs(dx) > Math.abs(dy)) {
-        ball.vx = -ball.vx;
-      } else {
-        ball.vy = -ball.vy;
-      }
       
       hits.push({ brick, destroyed, scoreGained });
       

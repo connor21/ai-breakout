@@ -6,6 +6,7 @@ import * as entitiesView from './render/entitiesView.js';
 import * as input from './input/input.js';
 import * as hud from './ui/hud.js';
 import * as menus from './ui/menus.js';
+import * as audio from './audio/audio.js';
 import { createInitialState, resetLevel } from './game/state.js';
 import { getLevel } from './game/levels.js';
 import { update } from './game/update.js';
@@ -33,6 +34,8 @@ function init() {
   entitiesView.createBall(state.ball);
   
   input.init(renderer.getCanvas());
+  
+  audio.init();
   
   hud.init();
   menus.init();

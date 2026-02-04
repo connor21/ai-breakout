@@ -2,6 +2,7 @@ import { WORLD_WIDTH, WORLD_HEIGHT } from '../render/renderer.js';
 import { checkWallCollisions, checkPaddleCollision, checkBrickCollisions } from './collision.js';
 import { updateScore, loseLife, checkLevelComplete, levelComplete, checkGameOver, gameOver } from './rules.js';
 import { removeBrick, updateBrick } from '../render/entitiesView.js';
+import * as audio from '../audio/audio.js';
 
 const LERP_FACTOR = 0.15;
 
@@ -60,29 +61,40 @@ function updateBall(state, dt) {
   ball.x += ball.vx * dt;
   ball.y += ball.vy * dt;
   
-  checkWallCollisions(ball, WORLD_WIDTH, WORLD_HEIGHT);
+  if (checkWallCollisions(ball, WORLD_WIDTH, WORLD_HEIGHT)) {
+    audio.play('wall_hit');
+  }
   
-  checkPaddleCollision(ball, state.paddle);
+  if (checkPaddleCollision(ball, state.paddle)) {
+    audio.play('paddle_hit');
+  }
   
   const hits = checkBrickCollisions(ball, state.bricks);
   hits.forEach(hit => {
     updateScore(state, hit.scoreGained);
     if (hit.destroyed) {
       removeBrick(hit.brick.id);
-    } else if (hit.brick.type === 'strong') {
-      updateBrick(hit.brick);
+      audio.play('brick_destroy');
+    } else {
+      audio.play('brick_hit');
+      if (hit.brick.type === 'strong') {
+        updateBrick(hit.brick);
+      }
     }
   });
   
   if (ball.y - ball.radius < 0) {
     loseLife(state);
+    audio.play('life_lost');
     
     if (checkGameOver(state)) {
       gameOver(state);
+      audio.play('game_over');
     }
   }
   
   if (checkLevelComplete(state)) {
     levelComplete(state);
+    audio.play('level_complete');
   }
 }
