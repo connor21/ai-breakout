@@ -41,7 +41,7 @@ function showStartMenu(callbacks) {
   const highscore = getHighscore();
   menuContainer.innerHTML = `
     <div class="menu">
-      <h1>ARKANOID</h1>
+      <h1>BRICK SMASH</h1>
       ${highscore > 0 ? `<p class="score-display">Highscore: ${highscore}</p>` : ''}
       <button id="start-btn" class="menu-btn">Start Game</button>
       <div class="instructions">
