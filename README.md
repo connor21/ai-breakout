@@ -1,6 +1,6 @@
 # Brick Smash
 
-Ein klassisches Arkanoid/Breakout-Spiel, implementiert mit JavaScript und three.js.
+Ein klassisches Breakout-Spiel, implementiert mit JavaScript und three.js.
 
 ## Features
 
